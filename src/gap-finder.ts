@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import type { ContentInventory, AutoBloggerConfig, TopicSuggestion } from './types.js';
+import { parseJsonResponse } from './utils.js';
 
 export async function findContentGaps(
     openai: OpenAI,
@@ -86,29 +87,24 @@ Return ONLY the JSON array, no markdown formatting.`;
     });
 
     const content = response.output_text || '[]';
+    const parsed = parseJsonResponse<unknown[]>(content, []);
 
-    try {
-        const cleaned = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(cleaned);
-
-        if (!Array.isArray(parsed)) {
-            console.error('Gap finder response is not an array');
-            return [];
-        }
-
-        return parsed
-            .slice(0, 10)
-            .filter(
-                (item: Record<string, unknown>) =>
-                    typeof item.title === 'string' &&
-                    typeof item.angle === 'string' &&
-                    typeof item.score === 'number' &&
-                    item.score >= 1 &&
-                    item.score <= 10 &&
-                    Array.isArray(item.suggestedTags)
-            ) as TopicSuggestion[];
-    } catch {
-        console.error('Failed to parse gap finder response');
+    if (!Array.isArray(parsed)) {
+        console.error('Gap finder response is not an array');
         return [];
     }
+
+    return parsed
+        .slice(0, 10)
+        .filter((raw): raw is TopicSuggestion => {
+            const item = raw as Record<string, unknown>;
+            return (
+                typeof item.title === 'string' &&
+                typeof item.angle === 'string' &&
+                typeof item.score === 'number' &&
+                item.score >= 1 &&
+                item.score <= 10 &&
+                Array.isArray(item.suggestedTags)
+            );
+        });
 }

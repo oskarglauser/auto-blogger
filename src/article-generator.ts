@@ -23,12 +23,7 @@ export async function generateArticle(
 
     // Build internal link list for the prompt
     const linkTargets = inventory.linkTargets
-        .filter((t) => {
-            const item = [...inventory.posts, ...inventory.guides].find(
-                (i) => i.slug === t.slug
-            );
-            return item?.lang === lang;
-        })
+        .filter((t) => t.lang === lang)
         .map((t) => {
             const baseUrl =
                 t.type === 'guide'

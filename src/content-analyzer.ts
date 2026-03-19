@@ -12,16 +12,15 @@ export async function analyzeContent(
         : [];
 
     const allItems = [...posts, ...guides];
-    const allTitles = allItems.map((item) => item.title);
-    const allTags = [...new Set(allItems.flatMap((item) => item.tags))];
 
     const linkTargets = allItems.map((item) => ({
         slug: item.slug,
         title: item.title,
         type: item.type,
+        lang: item.lang,
     }));
 
-    return { posts, guides, allTitles, allTags, linkTargets };
+    return { posts, guides, linkTargets };
 }
 
 async function readMarkdownFiles(

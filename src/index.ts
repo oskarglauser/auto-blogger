@@ -1,5 +1,5 @@
 // Core pipeline
-export { runPipeline, sanitizeMarkdown } from './pipeline.js';
+export { runPipeline } from './pipeline.js';
 export type { PipelineOptions } from './pipeline.js';
 
 // Individual steps (for custom pipelines)
@@ -9,6 +9,13 @@ export { researchTopic } from './web-researcher.js';
 export { generateArticle } from './article-generator.js';
 export { validateInternalLinks } from './internal-linker.js';
 export { writeArticle } from './file-writer.js';
+
+// Utilities
+export {
+    sanitizeMarkdown,
+    stripCodeFences,
+    parseJsonResponse,
+} from './utils.js';
 
 // Types
 export type {

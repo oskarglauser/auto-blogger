@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { join, resolve } from 'path';
 import slugify from 'slugify';
 import matter from 'gray-matter';
@@ -39,13 +39,7 @@ export function writeArticle(
         throw new Error(`Path traversal detected: ${filePath}`);
     }
 
-    if (!existsSync(dir)) {
-        mkdirSync(dir, { recursive: true });
-    }
-
-    if (existsSync(filePath)) {
-        throw new Error(`Article already exists: ${filePath}`);
-    }
+    mkdirSync(dir, { recursive: true });
 
     const validatedFrontmatter = {
         title: data.title,
@@ -60,7 +54,14 @@ export function writeArticle(
     };
 
     const output = matter.stringify(content.trim(), validatedFrontmatter);
-    writeFileSync(filePath, output, 'utf-8');
+    try {
+        writeFileSync(filePath, output, { encoding: 'utf-8', flag: 'wx' });
+    } catch (err) {
+        if ((err as NodeJS.ErrnoException).code === 'EEXIST') {
+            throw new Error(`Article already exists: ${filePath}`);
+        }
+        throw err;
+    }
 
     return {
         filePath,

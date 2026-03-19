@@ -89,9 +89,7 @@ export interface ContentItem {
 export interface ContentInventory {
     posts: ContentItem[];
     guides: ContentItem[];
-    allTitles: string[];
-    allTags: string[];
-    linkTargets: Array<{ slug: string; title: string; type: string }>;
+    linkTargets: Array<{ slug: string; title: string; type: 'blog' | 'guide'; lang: string }>;
 }
 
 export interface TopicSuggestion {
