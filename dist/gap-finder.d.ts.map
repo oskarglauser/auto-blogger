@@ -1,0 +1,1 @@
+{"version":3,"file":"gap-finder.d.ts","sourceRoot":"","sources":["../src/gap-finder.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,MAAM,QAAQ,CAAC;AAC5B,OAAO,KAAK,EAAE,gBAAgB,EAAE,iBAAiB,EAAE,eAAe,EAAE,MAAM,YAAY,CAAC;AAGvF,wBAAsB,eAAe,CACjC,MAAM,EAAE,MAAM,EACd,SAAS,EAAE,gBAAgB,EAC3B,MAAM,EAAE,iBAAiB,EACzB,IAAI,EAAE,MAAM,GACb,OAAO,CAAC,eAAe,EAAE,CAAC,CAoG5B"}
