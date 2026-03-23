@@ -24,10 +24,20 @@ export function parseJsonResponse(text, fallback) {
  * - Strip dangerous HTML tags
  */
 export function sanitizeMarkdown(markdown) {
-    // Strip wrapping code fences that LLMs sometimes add (```markdown ... ```)
     let stripped = markdown.trim();
-    if (stripped.startsWith('```')) {
+    // Strip wrapping code fences that LLMs sometimes add (```markdown ... ```)
+    // Handle cases where there's preamble text before the code fence
+    const fenceMatch = stripped.match(/```(?:markdown|md)?\s*\n([\s\S]*?)```\s*$/);
+    if (fenceMatch) {
+        stripped = fenceMatch[1].trim();
+    }
+    else if (stripped.startsWith('```')) {
         stripped = stripped.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, '');
+    }
+    // Strip any preamble text before YAML frontmatter (e.g. "Here's the revised article:")
+    const frontmatterStart = stripped.indexOf('---');
+    if (frontmatterStart > 0) {
+        stripped = stripped.slice(frontmatterStart);
     }
     const { data, content } = matter(stripped);
     const cleaned = content
