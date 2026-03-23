@@ -24,7 +24,12 @@ export function parseJsonResponse(text, fallback) {
  * - Strip dangerous HTML tags
  */
 export function sanitizeMarkdown(markdown) {
-    const { data, content } = matter(markdown);
+    // Strip wrapping code fences that LLMs sometimes add (```markdown ... ```)
+    let stripped = markdown.trim();
+    if (stripped.startsWith('```')) {
+        stripped = stripped.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, '');
+    }
+    const { data, content } = matter(stripped);
     const cleaned = content
         .replace(/^(\s*)-\s*\[[ x]\]\s*/gm, '$1- ')
         .replace(/\n+(?:\*\*)?(?:Meta\s*description|SEO\s*(?:note|title|description))(?:\*\*)?[:\s].*$/gi, '')

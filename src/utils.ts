@@ -26,7 +26,13 @@ export function parseJsonResponse<T>(text: string, fallback: T): T {
  * - Strip dangerous HTML tags
  */
 export function sanitizeMarkdown(markdown: string): string {
-    const { data, content } = matter(markdown);
+    // Strip wrapping code fences that LLMs sometimes add (```markdown ... ```)
+    let stripped = markdown.trim();
+    if (stripped.startsWith('```')) {
+        stripped = stripped.replace(/^```\w*\n?/, '').replace(/\n?```\s*$/, '');
+    }
+
+    const { data, content } = matter(stripped);
 
     const cleaned = content
         .replace(/^(\s*)-\s*\[[ x]\]\s*/gm, '$1- ')
